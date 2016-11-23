@@ -98,6 +98,13 @@ class Player {
 
                 getOEmbedData(url, params).then((data) => {
                     const iframe = createEmbed(data, element);
+                    const fsAttributes = [];
+                    for(let i = 0; i < iframe.attributes.length; i++) {
+                      if(iframe.attributes.item(i).name.indexOf('fullscreen') > -1) {
+                        fsAttributes.push(iframe.attributes.item(i).name);
+                      }
+                    }
+                    fsAttributes.forEach(attr => iframe.attributes.removeNamedItem(attr));
                     this.element = iframe;
 
                     swapCallbacks(element, iframe);
