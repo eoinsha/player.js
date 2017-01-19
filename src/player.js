@@ -1,4 +1,5 @@
 import './lib/compatibility-check';
+import '../node_modules/babel-polyfill/dist/polyfill';
 
 import 'es6-collections';
 import Promise from 'native-promise-only';
