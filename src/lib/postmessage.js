@@ -2,7 +2,7 @@
  * @module lib/postmessage
  */
 
-import { getCallbacks, removeCallback } from './callbacks';
+import { getCallbacks, removeCallback, shiftCallbacks } from './callbacks';
 
 /**
  * Parse a message received from postMessage.
@@ -28,7 +28,7 @@ export function parseMessageData(data) {
  * @return {void}
  */
 export function postMessage(player, method, params) {
-    if (!player.element.contentWindow.postMessage) {
+    if (!player.element.contentWindow || !player.element.contentWindow.postMessage) {
         return;
     }
 
@@ -66,31 +66,32 @@ export function processData(player, data) {
         if (data.event === 'error') {
             const promises = getCallbacks(player, data.data.method);
 
-            for (const promise of promises) {
+            promises.forEach((promise) => {
                 const error = new Error(data.data.message);
                 error.name = data.data.name;
 
                 promise.reject(error);
                 removeCallback(player, data.data.method, promise);
-            }
+            });
         }
 
         callbacks = getCallbacks(player, `event:${data.event}`);
         param = data.data;
     }
     else if (data.method) {
-        callbacks = getCallbacks(player, data.method);
-        param = data.value;
+        const callback = shiftCallbacks(player, data.method);
 
-        // Clear all the callbacks
-        removeCallback(player, data.method);
+        if (callback) {
+            callbacks.push(callback);
+            param = data.value;
+        }
     }
 
-    for (const callback of callbacks) {
+    callbacks.forEach((callback) => {
         try {
             if (typeof callback === 'function') {
                 callback.call(player, param);
-                continue;
+                return;
             }
 
             callback.resolve(param);
@@ -98,5 +99,5 @@ export function processData(player, data) {
         catch (e) {
             // empty
         }
-    }
+    });
 }
