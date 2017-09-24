@@ -1,4 +1,4 @@
-/*! @vimeo/player v2.2.0 | (c) 2017 Vimeo | MIT License | https://github.com/vimeo/player.js */
+/*! @vimeo/player v2.2.0-fullscreen-1 | (c) 2017 Vimeo | MIT License | https://github.com/vimeo/player.js */
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -7970,11 +7970,7 @@ function parseMessageData(data) {
  * @param {object} params The parameters to send to the player.
  * @return {void}
  */
-<<<<<<< 26a726271946807883baa1d4699d7cd33e4ddce9
-function postMessage(player, method, params) {
-=======
 function postMessage$1(player, method, params) {
->>>>>>> Generate dist artefacts for v2.0.1-nofullscreen-1
     if (!player.element.contentWindow || !player.element.contentWindow.postMessage) {
         return;
     }
